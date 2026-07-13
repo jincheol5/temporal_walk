@@ -1,27 +1,43 @@
 import argparse
-import torch
-from util import TrainUtils
+from utils import DataUtils
 
 """
 << Test >> 
-utils.data_utils.TrainUtils
+utils.data_utils.DataUtils
 """
 def test_fn(**kwargs):
     match kwargs['test_num']:
         case 1:
             """
-            Test. TrainUtils.padding_walks
+            Test. DataUtils.preprocess_dataset()
             """
-            walk_seq_list=[
-                [1,3,5,2],
-                [2,4],
-                [3,1,6,7,8],
-            ]
-            walks=TrainUtils.padding_walks(
-                walk_seq_list=walk_seq_list,
-                device=torch.device("cpu")
+            print(f"<< convert to static graph >>")
+            data=DataUtils.preprocess_dataset(
+                dataset_name=kwargs["dataset_name"],
+                graph_type="static"
             )
-            print(walks)
+            print(f"n_node: {data['n_node']}")
+            print(f"bipartite: {data['bipartite']}")
+            print(f"min_u: {data['graph_df']['u'].min()}")
+            print(f"max_u: {data['max_u']}")
+            print(f"min_i: {data['graph_df']['i'].min()}")
+            print(f"max_i: {data['graph_df']['i'].max()}")
+            print(f"graph_df:")
+            print(data['graph_df'].head(5))
+
+            print(f"\n<< convert to temporal graph >>")
+            data=DataUtils.preprocess_dataset(
+                dataset_name=kwargs["dataset_name"],
+                graph_type="temporal"
+            )
+            print(f"n_node: {data['n_node']}")
+            print(f"bipartite: {data['bipartite']}")
+            print(f"min_u: {data['graph_df']['u'].min()}")
+            print(f"max_u: {data['max_u']}")
+            print(f"min_i: {data['graph_df']['i'].min()}")
+            print(f"max_i: {data['graph_df']['i'].max()}")
+            print(f"graph_df:")
+            print(data['graph_df'].head(5))
 
 if __name__=="__main__":
     """
@@ -29,8 +45,10 @@ if __name__=="__main__":
     """
     parser=argparse.ArgumentParser()
     parser.add_argument("--test_num",type=int,default=1)
+    parser.add_argument("--dataset_name",type=str,default=f"enron")
     args=parser.parse_args()
     test_config={
-        "test_num":args.test_num
+        "test_num":args.test_num,
+        "dataset_name":args.dataset_name
     }
     test_fn(**test_config)

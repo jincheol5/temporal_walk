@@ -9,8 +9,7 @@ class Graph:
     node_id=0: padding node
     """
     def __init__(self,
-            graph_df:pd.DataFrame,
-            embed_dim:int
+            graph_df:pd.DataFrame
         ):
         """
         Input:
@@ -28,18 +27,6 @@ class Graph:
 
         # set n_node
         self.n_node=max(graph_df["u"].max(),graph_df["i"].max())
-
-        # set node_ft
-        self.set_node_ft(embed_dim=embed_dim)
-
-    def set_node_ft(self,
-            embed_dim:int=32
-        ):
-        """
-        Input:
-            embedding_dim: int
-        """
-        self.node_ft=torch.randn(self.n_node+1,embed_dim)
 
     def random_walk(self,
             source:int,
@@ -67,7 +54,7 @@ class Graph:
             cur_node=next_node
         return walk_seq
 
-    def generate_walk_seq_list(self,
+    def generate_walks(self,
             num_walk:int,
             walk_length:int,
             shuffle_nodes:bool=True
@@ -77,10 +64,10 @@ class Graph:
             num_walk: int, 각 노드마다 생성할 walk 개수
             walk_length: int, 각 walk sequence의 길이
         Output:
-            walk_seq_list: list of walk_seq
+            walks: list of walk_seq
         """
         nodes=list(self.adj.keys())
-        walk_seq_list=[]
+        walks=[]
         for _ in range(num_walk):
             if shuffle_nodes:
                 random.shuffle(nodes)
@@ -89,5 +76,5 @@ class Graph:
                     source=node,
                     walk_length=walk_length
                 )
-                walk_seq_list.append(walk_seq)
-        return walk_seq_list
+                walks.append(walk_seq)
+        return walks

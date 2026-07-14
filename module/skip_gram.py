@@ -8,15 +8,13 @@ Gensim = CPU 학습
 """
 class SkipGram(Word2Vec):
     def __init__(
-        self,
-        sentences=None,
-        vector_size:int=128,
-        window:int=10,
-        workers:int|None=None,
-        **kwargs,
-    ):
+            self,
+            vector_size:int=128,
+            window:int=10,
+            workers:int|None=None,
+            **kwargs,
+        ):
         super().__init__(
-            sentences=sentences, # 학습에 사용할 sequence 목록
             vector_size=vector_size, # 노드 임베딩 차원
             window=window, # 중심 노드에서 문맥 노드를 선택하는 최대 거리
             min_count=0, # sequence에서 일정 횟수보다 적게 등장한 토큰을 제거하는 기준, graph의 경우 0으로 고정

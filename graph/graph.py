@@ -17,7 +17,7 @@ class Graph:
         """
         # set adj
         self.adj=defaultdict(list)
-        for event in graph_df.itertuples(index=False): # col: [u,i,label]
+        for event in graph_df.itertuples(index=False): # col: [u,i]
             src=int(event.u)
             dst=int(event.i)
 
@@ -25,12 +25,16 @@ class Graph:
             self.adj[dst].append(src)
             self.adj[src].append(dst)
 
+        # 각 노드의 인접 리스트에서 중복 제거
+        for node in self.adj:
+            self.adj[node]=list(dict.fromkeys(self.adj[node]))
+
         # set n_node
         self.n_node=max(graph_df["u"].max(),graph_df["i"].max())
 
     def random_walk(self,
             source:int,
-            walk_length:int
+            walk_len:int
         ):
         """
         Input:
@@ -41,7 +45,7 @@ class Graph:
         """
         walk_seq=[source]
         cur_node=source
-        for _ in range(walk_length-1):
+        for _ in range(walk_len-1):
             neighbors=self.adj.get(cur_node,[])
         
             # 이웃이 없으면 종료
@@ -55,8 +59,8 @@ class Graph:
         return walk_seq
 
     def generate_walks(self,
-            num_walk:int,
-            walk_length:int,
+            n_walk:int,
+            walk_len:int,
             shuffle_nodes:bool=True
         ):
         """
@@ -68,13 +72,13 @@ class Graph:
         """
         nodes=list(self.adj.keys())
         walks=[]
-        for _ in range(num_walk):
+        for _ in range(n_walk):
             if shuffle_nodes:
                 random.shuffle(nodes)
             for node in nodes:
                 walk_seq=self.random_walk(
                     source=node,
-                    walk_length=walk_length
+                    walk_len=walk_len
                 )
                 walks.append(walk_seq)
         return walks

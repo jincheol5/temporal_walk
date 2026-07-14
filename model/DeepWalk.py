@@ -28,7 +28,7 @@ class DeepWalk_Base(nn.Module):
         # downstream 학습 시 노드 임베딩을 고정
         self.node_ft.weight.requires_grad_(False)
 
-    def convert_skipgram_to_torch_embedding(self):
+    def convert_SkipGram_to_torch_embedding(self):
         """
         Gensim Skip-gram의 center embedding을 PyTorch 임베딩으로 변환
         CPU에서 수행
@@ -76,7 +76,7 @@ class DeepWalk_Base(nn.Module):
         )
 
         ### Gensim 임베딩을 PyTorch nn.Embedding으로 변환 후 저장
-        self.convert_skipgram_to_torch_embedding()
+        self.convert_SkipGram_to_torch_embedding()
         self.skipgram_trained=True
 
     def forward(self):
@@ -113,6 +113,30 @@ class DeepWalk_Link_Prediction(DeepWalk_Base):
         ):
         """
         Input:
-            pos_edge
-            neg_edge
+            pos_edge: dict
+                key: src, dst
+                value: 
+                    src: [B,] 
+                    dst: [B,] 
+            neg_edge: dict
+                key: src, dst
+                value: 
+                    src: [B,] 
+                    dst: [B,] 
         """
+        ### 0. unpack event dict
+        pos_src=pos_edge["src"]
+        pos_dst=pos_edge["dst"]
+        neg_src=neg_edge["src"]
+        neg_dst=neg_edge["dst"]
+
+        src=torch.concat([pos_src,neg_src],dim=0) # [2B,]
+        dst=torch.concat([pos_dst,neg_dst],dim=0) # [2B,]
+
+        ### 1. current batch에 대한 embedding
+        src_ft=self.node_ft(src)
+        dst_ft=self.node_ft[dst]
+
+        link_ft=torch.concat([src_ft,dst_ft],dim=-1) # [2B,embed_dim+embed_dim]
+        pred_link_logit=self.decoder(link_ft) # [2B,1]
+        return pred_link_logit

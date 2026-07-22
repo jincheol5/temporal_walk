@@ -49,32 +49,3 @@ class TrainUtils:
         val_df=df.iloc[train_end:val_end].reset_index(drop=True)
         test_df=df.iloc[val_end:].reset_index(drop=True)
         return train_df,val_df,test_df
-    
-    @staticmethod
-    def get_element_of_static_graph(
-            df:pd.DataFrame
-        ):
-        """
-        """
-        src=torch.as_tensor(
-            df["u"].to_numpy(),
-            dtype=torch.long,
-        )
-        dst=torch.as_tensor(
-            df["i"].to_numpy(),
-            dtype=torch.long,
-        )
-        return {
-            "src":src,
-            "dst":dst
-        }
-    
-    @staticmethod
-    def split_graph(
-            src:torch.Tensor,
-            dst:torch.Tensor,
-            train_ratio:float=0.7,
-            val_ratio:float=0.1,
-        ):
-        """
-        """

@@ -1,2 +1,4 @@
 # temporal_walk
-temporal walk
+Implemented model:
+- CTDNE
+- ATDGEB 

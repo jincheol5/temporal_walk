@@ -17,7 +17,8 @@ class TemporalGraph:
             graph_df: pd.DataFrame
             bipartite: bool
         """
-        # set adj, adj_t, edge_events
+        # set graph_df, adj, adj_t, edge_events
+        self.graph_df=graph_df
         self.adj=defaultdict(list)
         self.adj_t=defaultdict(list)
         self.edge_events=[]

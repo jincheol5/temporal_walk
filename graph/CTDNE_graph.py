@@ -13,7 +13,7 @@ class CTDNE_Graph(TemporalGraph):
             graph_df=graph_df,
             bipartite=bipartite
         )
-    
+
     def select_temporal_edge_uniform(self):
         """
         모든 temporal edge를 동일한 확률로 선택

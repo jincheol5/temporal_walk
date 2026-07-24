@@ -275,3 +275,10 @@ class ATDGEB_Graph(TemporalGraph):
             next_stru[0].fill(0.0) # padding node는 모든 layer에서 zero vector 유지
             stru=next_stru
         return stru
+
+    def LSBS(self,
+
+        ):
+        """
+        Alias method 부터
+        """
